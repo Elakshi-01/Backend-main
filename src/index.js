@@ -9,8 +9,18 @@ import connectdb from "./db/index.js";
 const app = express();
 
 
-connectdb();
+connectdb()
+.then( () => {
 
+app.listen(process.env.PORT || 8000 , () => {
+    console.log(`Server started at port ${process.env.PORT}`);
+})
+
+
+})
+.catch( (error) => {
+console.log("Error in DB connection", error);
+})
 
 
 
