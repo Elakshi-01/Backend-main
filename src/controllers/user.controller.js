@@ -221,4 +221,99 @@ const options = {
 })
 
 
-export { registerUser ,loginUser,logOutUser,refreshAccessToken};
+
+const changePassword = asyncHandler( async (req,res) => {
+
+const {currentPassword,newPassword} = req.body;
+
+const user = await User.findById(req.user?._id);
+
+const isPasswordValid = await user.isPasswordCorrect(currentPassword);
+
+if(!isPasswordValid){
+    throw new ApiError(401,"Current password is incorrect");    
+
+}
+
+user.password = newPassword;
+await user.save({validiteBeforeSave : false});
+
+return res.status(200).json(new Apiresponse(200,null,"Password changed successfully")); 
+
+
+
+
+
+})
+
+
+
+const getCurrentUser = asyncHandler( async (req,res) => {
+
+return res.status(200).json(new Apiresponse(200,req.user,"Current user fetched successfully"));
+
+
+})
+
+
+const updateAccountDetails = asyncHandler( async (req,res) => {
+
+    const {fullName,email} = req.body;
+
+    if(!fullName || !email){
+        throw new ApiError(400,"Full name and email are required");
+    }
+
+    const user=await User.findByIdAndUpdate(req.user._id,{fullName,email:email},{new : true}).select("-password -refreshToken");
+return res.status(200).json(new Apiresponse(200,user,"Account details updated successfully"));
+
+})
+
+
+
+
+const updateAvatar = asyncHandler( async (req,res) => {
+
+    const avatarLocalPath = req.file?.path
+
+    if(!avatarLocalPath){
+        throw new ApiError(400,"Avatar image is required");
+    }   
+    const avatar = await uploadOnClodinary(avatarLocalPath);
+    if(!avatar){
+        throw new ApiError(500,"Avatar upload failed, please try again");
+    }
+
+    await User.findByIdAndUpdate(req.user._id, { $set:{avatar:avatar.url}},{new : true}).select("-password -refreshToken");
+
+    return res.status(200).json(new Apiresponse(200,avatar.url,"Avatar updated successfully"));
+
+
+
+})
+
+
+const updateCoverImage = asyncHandler( async (req,res) => {
+
+    const coverImageLocalPath = req.file?.path
+
+    if(!coverImageLocalPath){
+        throw new ApiError(400,"Avatar image is required");
+    }   
+    const coverImage = await uploadOnClodinary(coverImageLocalPath);
+    if(!coverImage){
+        throw new ApiError(500,"coverImage upload failed, please try again");
+    }
+
+    await User.findByIdAndUpdate(req.user._id, { $set:{coverImage:coverImage.url}},{new : true}).select("-password -refreshToken");
+
+    return res.status(200).json(new Apiresponse(200,coverImage.url,"CoverImage updated successfully"));
+
+
+
+})
+
+
+
+
+export { registerUser ,loginUser,logOutUser,refreshAccessToken,getCurrentUser,changePassword,updateAccountDetails,updateAvatar,updateCoverImage} ;
