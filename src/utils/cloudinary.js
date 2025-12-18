@@ -24,7 +24,15 @@ const response =await cloudinary.uploader.upload(localFilePath,{
     resource_type: 'auto',
 })
 
-console.log('File uploaded to Cloudinary successfully',response.url);
+
+
+
+fs.unlinkSync(localFilePath); // Delete the local file after successful upload
+
+
+
+
+
 return response;
 
         }
@@ -41,3 +49,6 @@ fs.unlinkSync(localFilePath); // Delete the local file after upload attempt got 
 
     
     export {uploadOnClodinary};
+
+    
+
