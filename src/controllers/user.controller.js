@@ -174,7 +174,7 @@ const logOutUser = asyncHandler( async (req,res) => {
 
 
 
- await User.fndByIdandUpdate(req.user._id,{ $set : {refreshToken:null }},{next : true},{validiteBeforeSave:false})
+ await User.fndByIdandUpdate(req.user._id,{ $unset : {refreshToken:1}},{next : true},{validiteBeforeSave:false})
 
 const options = {
     httpOnly : true,
