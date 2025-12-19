@@ -498,4 +498,4 @@ return res.status(200).json(new Apiresponse(200,user[0].watchHistoryVideos,"Watc
 
 
 
-export { registerUser ,loginUser,logOutUser,refreshAccessToken,getCurrentUser,changePassword,updateAccountDetails,updateAvatar,updateCoverImage,getChannelProfile} ;
+export { registerUser ,loginUser,logOutUser,refreshAccessToken,getCurrentUser,changePassword,updateAccountDetails,updateAvatar,updateCoverImage,getChannelProfile,getWatchHistory} ;
